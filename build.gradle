@@ -12,6 +12,8 @@ repositories {
 	mavenCentral()
 }
 
+
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -19,6 +21,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 	compile 'com.h2database:h2'
+	compile 'se.transmode.gradle:gradle-docker:1.2'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.projectlombok:lombok'
