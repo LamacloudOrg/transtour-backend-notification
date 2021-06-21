@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "transtourmobile",
+  "private_key_id": "043e5d8860fb0d82c9de0562faf2c00ff131f15a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQClxOFvT5gTMsZo\nMnexx5/eysT2HBPa/viicxOp3LqWiLZxPSCg3atbNVkUSYH8wN1ktAqZoXTYGX18\nnlbtT2gwYnskHV6Skz2ZFGgWpmvagHre/EbFgnyH2IwI90q7zKXTePt87wfO5t4b\nOHm25dArqR2fsNMJDIq7Irmg1mheBOFUSO3loeooqe/M3aDJ5kHBOVrC1DiOI1vD\ntzyuskzRTVxpmJatWpEq5mXRZ/YmuOP/gBOH9XaT22JXsqGTt9LVzv9Q9F2nVbdh\nZc4LsH2/lPap+zvpaQL0GKx4DNcV2WYsOl9u8NuWJVrCJ0f2m6rgYEuUxQSCQbez\nC7BGBGpbAgMBAAECggEAEVG3GJlGcxG11LLFJQANeMpS9sBV5hEH6s0UIQX3QVK0\n9l15GGWLNC3S30GTgP6o2DnOoQt944q853Vm8UdVGY0IfuxJ8mLLfOq6ufcW7flz\nckha9TgeCQFmbBS41v3ZgMqIl/PPVd4dbCxOhyiOmH6ETP1n/G+LhQ6/5IkngVRd\nJprfJLfLBJ3X6Evu/4fKB730GcMb/OBIwKryOTgzWAKe6PSGHpa5SA4YEh94g29X\nhDHdqS84teXODBystFtZWKIm/2oiEgWbPUKv3NKCo+i4jgEXHAiHKAw4D+2+nzMq\nkJzuad8g2MKH7AuY662/jwP0MWnjM4uZfOuAhb8hQQKBgQDQarNSK5klF7LeNIfu\nOxjtDkJtxm48TIO8tLELwQ8uSnrxo2wv3U1wweZKS6ucPjeRf0tHt/vTAOFqnC5Q\n89v5/I0JJPxImXcwzZTAOV2NENfU7CJRbQNJX6/9Pv7HX3ljgHRpSrEZw/Edtx8O\nl8NgJDgn7hU117t0GBKuEP18QQKBgQDLnY49aBUuD4S2E77AkS2LwFf/EtK7DxV2\nbreE2e4ymipJlvSJCw4Sh2UjDESH6T7xMqfxeok/yCW+m24NGd2KZbxiAG6yA7fV\nA/65h9Vsu1mR0+tbN7+USFq/SBeOU/jkM7cXt4e7mBCB9uqzl9YO+Sq3qviKcs/N\n86G/cSpvmwKBgQCfgZneAGoDnmCReSizJd2Mx8YFV8FUOsbz7GI3ebjRl8UCHC2X\ncEptSqiiIcmkGWXT39VQfTmoolriicdUw12OtD+ISRsfwPwciKoYd47mgIZ+eX5G\nTSUfybDaI5VAJwyzH0N4teZWrsRhFp4ZQAMSGIY14Ruwinv3fNkHCQ/HQQKBgD8n\nTCHhsYgKyifLMgP6Q30wGFsGFJRuVkLYjlVHXukVBf6zMn97DU9T7VuUh4D8KEiZ\nZJuyXPWKd6KKBPVNS3iMm4RuC+ds3czVI2GaLuk9psdjSoGNZf9w/ayMiLndc7oc\nDDLv+sqFnMEiu6MeegdE4yn6foI6oBeJ9GYzjGz3AoGBAJ59ovb5giDsw+bBVcVK\nTdcKr0BKf+1Bi5NdawHl46dxw5ZyEc/zvHYq2sF06zFX8HbLJYp5IdS/Ybgscp/T\n8niZXzJVWweJgalEqE7Zll9RIZdOhNby9jJ2z51qGSKtzkZm671IMoc6sdOPIYWB\nWmFhKqQZmZA3WaRlsq+GIqJH\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-jpx9i@transtourmobile.iam.gserviceaccount.com",
+  "client_id": "108033211932057729132",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-jpx9i%40transtourmobile.iam.gserviceaccount.com"
+}
