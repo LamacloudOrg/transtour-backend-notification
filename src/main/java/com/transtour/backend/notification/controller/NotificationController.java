@@ -36,7 +36,7 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     };
 
-    @PostMapping("/topic")
+    @PostMapping("/sendMessageMobile")
     public String sendNotificationMobile(@RequestBody NotificationMobileDTO notificationMobileDto,
                                          @RequestParam String token) throws FirebaseMessagingException {
         return firebaseService.sendNotification(notificationMobileDto, token);
