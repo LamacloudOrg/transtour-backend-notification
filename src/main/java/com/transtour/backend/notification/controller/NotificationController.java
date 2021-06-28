@@ -2,6 +2,8 @@ package com.transtour.backend.notification.controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.transtour.backend.notification.dto.TravelNotificationMobileDTO;
+import com.transtour.backend.notification.dto.UserNotificationDTO;
+import com.transtour.backend.notification.model.UserNotification;
 import com.transtour.backend.notification.service.FirebaseMessagingService;
 import com.transtour.backend.notification.service.NotificationService;
 import org.slf4j.Logger;
@@ -42,5 +44,10 @@ public class NotificationController {
                                          @RequestParam String token) throws IOException {
         ResponseEntity result = firebaseService.sendNotification(travelNotificationMobileDTO, token);
         return result;
+    }
+
+    @PostMapping("/registerToken")
+    private CompletableFuture<UserNotification> registerToken(@RequestBody UserNotificationDTO userNotificationDTO) {
+        return service.registerToken(userNotificationDTO);
     }
 }

@@ -1,8 +1,12 @@
 package com.transtour.backend.notification.service;
 
+import com.github.dozermapper.core.Mapper;
+import com.transtour.backend.notification.dto.UserNotificationDTO;
 import com.transtour.backend.notification.exception.EmailException;
 import com.transtour.backend.notification.model.EmailNotification;
+import com.transtour.backend.notification.model.UserNotification;
 import com.transtour.backend.notification.repository.ENotifiactionRepository;
+import com.transtour.backend.notification.repository.IUserNotifiactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -24,6 +29,13 @@ public class NotificationService {
     @Qualifier(value = "EmailNotification")
     @Autowired
     ENotifiactionRepository eRpo;
+
+    @Qualifier(value = "UserNotification")
+    @Autowired
+    IUserNotifiactionRepository userNotiRepo;
+
+    @Autowired
+    private Mapper mapper;
 
     public CompletableFuture<Void> sendMail(String message) {
 
@@ -67,4 +79,19 @@ public class NotificationService {
 
     }
 
+    public CompletableFuture<UserNotification> registerToken (UserNotificationDTO userNotificationDTO){
+
+        CompletableFuture<UserNotification> completableFuture = CompletableFuture.supplyAsync(
+                ()->{
+                    Optional<UserNotification> optionalUser = userNotiRepo.findById(userNotificationDTO.getId());
+                    UserNotification userNoti = optionalUser.get();
+                    userNoti.setFcmToken(userNotificationDTO.getFcmToken());
+                    userNoti.setMessage("mensaje");
+                    userNoti.setStatus("status");
+                    return userNotiRepo.saveAndFlush(userNoti);
+                }
+        );
+
+        return completableFuture;
+    }
 }

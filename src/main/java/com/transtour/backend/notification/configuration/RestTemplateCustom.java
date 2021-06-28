@@ -8,7 +8,7 @@ import org.springframework.context.annotation.DependsOn;
 @Configuration
 public class RestTemplateCustom {
 
-    /*@Bean
+    @Bean
     @DependsOn(value = {"customRestTemplateCustomizer"})
     public RestTemplateBuilder restTemplateBuilder() {
         return new RestTemplateBuilder(customRestTemplateCustomizer());
@@ -17,6 +17,6 @@ public class RestTemplateCustom {
     @Bean
     public CustomRestTemplateCustomizer customRestTemplateCustomizer() {
         return new CustomRestTemplateCustomizer();
-    }*/
+    }
 
 }
