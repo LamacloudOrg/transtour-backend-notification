@@ -46,7 +46,7 @@ public class FirebaseMessagingService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add(HttpHeaders.AUTHORIZATION, System.getenv("token-header"));
+        headers.add(HttpHeaders.AUTHORIZATION, System.getenv("firebase_token"));
 
         Optional.of(travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER)).orElse("2");
         String carDriver = travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);

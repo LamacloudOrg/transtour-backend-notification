@@ -8,6 +8,17 @@ group = 'com.transtour.backend'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+ext.apiToken = System.getenv('firebase_token')
+
+Properties properties = new Properties()
+def propertiesFile = project.rootProject.file('local.properties')
+if (propertiesFile.exists()) {
+	properties.load(propertiesFile.newDataInputStream())
+}
+ext.apiToken = properties.getProperty('api.token')
+
+
+
 repositories {
 	mavenCentral()
 }
