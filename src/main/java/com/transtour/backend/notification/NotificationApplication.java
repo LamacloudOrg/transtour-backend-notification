@@ -28,6 +28,8 @@ public class NotificationApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("aplicacion iniciacda");
+		System.out.println("token header "+System.getenv("token-header"));
+
 	}
 
 	@Bean

@@ -40,9 +40,8 @@ public class NotificationController {
     };
 
     @PostMapping("/sendMessageMobile")
-    private ResponseEntity sendNotificationMobile(@RequestBody TravelNotificationMobileDTO travelNotificationMobileDTO,
-                                         @RequestParam String token) throws IOException {
-        ResponseEntity result = firebaseService.sendNotification(travelNotificationMobileDTO, token);
+    private ResponseEntity sendNotificationMobile(@RequestBody TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
+        ResponseEntity result = firebaseService.sendNotification(travelNotificationMobileDTO);
         return result;
     }
 

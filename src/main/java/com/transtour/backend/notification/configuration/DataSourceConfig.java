@@ -7,15 +7,15 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-class DataSourceConfig {
+public class DataSourceConfig {
 
     @Bean
     public DataSource getDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.mysql.jdbc.Driver");
-        dataSourceBuilder.url("jdbc:mysql://mysql-notification:3307/notification?useSSL=false");
-        dataSourceBuilder.username("transtourRoot");
-        dataSourceBuilder.password("transtourRoot");
+        dataSourceBuilder.url("jdbc:mysql://localhost:3307/notification?useSSL=false");
+        dataSourceBuilder.username("transtourNoti");
+        dataSourceBuilder.password("transtourNoti");
         return dataSourceBuilder.build();
     }
 }

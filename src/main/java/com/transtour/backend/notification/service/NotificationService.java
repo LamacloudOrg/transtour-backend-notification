@@ -1,6 +1,5 @@
 package com.transtour.backend.notification.service;
 
-import com.github.dozermapper.core.Mapper;
 import com.transtour.backend.notification.dto.UserNotificationDTO;
 import com.transtour.backend.notification.exception.EmailException;
 import com.transtour.backend.notification.model.EmailNotification;
@@ -34,8 +33,6 @@ public class NotificationService {
     @Autowired
     IUserNotifiactionRepository userNotiRepo;
 
-    @Autowired
-    private Mapper mapper;
 
     public CompletableFuture<Void> sendMail(String message) {
 
@@ -86,8 +83,8 @@ public class NotificationService {
                     Optional<UserNotification> optionalUser = userNotiRepo.findById(userNotificationDTO.getId());
                     UserNotification userNoti = optionalUser.get();
                     userNoti.setFcmToken(userNotificationDTO.getFcmToken());
-                    userNoti.setMessage("mensaje");
-                    userNoti.setStatus("status");
+                    //userNoti.se(userNotificationDTO.toString());
+                    //userNoti.setStatus("status");
                     return userNotiRepo.saveAndFlush(userNoti);
                 }
         );

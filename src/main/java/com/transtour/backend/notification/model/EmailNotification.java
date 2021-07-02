@@ -10,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "EMAIL_NOTIFICATION")
 public class EmailNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,6 @@ public class EmailNotification {
 
     @Column(name="email")
     private String email;
-
 
     @Column(name="is_notificable")
     private boolean active;
