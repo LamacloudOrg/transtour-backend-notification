@@ -1,6 +1,7 @@
 package com.transtour.backend.notification;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.util.Map;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -21,14 +23,17 @@ import java.io.IOException;
 @EnableJpaRepositories(basePackages = "com.transtour.backend.notification.repository")
 public class NotificationApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
+	@Value("${token-header}")
+	String token;
+
+	public static void main(String[] args) throws IOException {
 		SpringApplication.run(NotificationApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("aplicacion iniciacda");
-		System.out.println("token header "+System.getProperty("firebase_token"));
+		System.out.println("token header value "+token);
 
 	}
 

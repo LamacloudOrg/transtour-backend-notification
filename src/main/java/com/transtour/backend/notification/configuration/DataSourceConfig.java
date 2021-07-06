@@ -13,7 +13,7 @@ public class DataSourceConfig {
     public DataSource getDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.mysql.jdbc.Driver");
-        dataSourceBuilder.url("jdbc:mysql://localhost:3307/notification?useSSL=false");
+        dataSourceBuilder.url("jdbc:mysql://mysqldb-host-notification:3307/notification?useSSL=false");
         dataSourceBuilder.username("transtourNoti");
         dataSourceBuilder.password("transtourNoti");
         return dataSourceBuilder.build();

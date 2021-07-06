@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class FirebaseMessagingService {
     @Autowired
     IUserNotifiactionRepository userNotiRepo;
 
+
+    @Value("${token-header}")
+    String token;
+
     @Autowired
     public FirebaseMessagingService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -46,9 +51,9 @@ public class FirebaseMessagingService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add(HttpHeaders.AUTHORIZATION, System.getenv("firebase_token"));
+        headers.add(HttpHeaders.AUTHORIZATION, token);
 
-        Optional.of(travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER)).orElse("2");
+        Optional.ofNullable(travelNotificationMobileDTO.getData().getOrDefault(Constants.CAR_DRIVER,"2")).orElse("2");
         String carDriver = travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
 
         log.debug("carDriver",carDriver);
