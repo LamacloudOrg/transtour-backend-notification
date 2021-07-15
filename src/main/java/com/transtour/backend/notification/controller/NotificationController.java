@@ -46,7 +46,7 @@ public class NotificationController {
     }
 
     @PostMapping("/registerToken")
-    private CompletableFuture<UserNotification> registerToken(@RequestBody UserNotificationDTO userNotificationDTO) {
+    private CompletableFuture<String> registerToken(@RequestBody UserNotificationDTO userNotificationDTO) {
         return service.registerToken(userNotificationDTO);
     }
 }

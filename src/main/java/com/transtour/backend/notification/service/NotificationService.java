@@ -2,6 +2,7 @@ package com.transtour.backend.notification.service;
 
 import com.transtour.backend.notification.dto.UserNotificationDTO;
 import com.transtour.backend.notification.exception.EmailException;
+import com.transtour.backend.notification.exception.UserNotExist;
 import com.transtour.backend.notification.model.EmailNotification;
 import com.transtour.backend.notification.model.UserNotification;
 import com.transtour.backend.notification.repository.ENotifiactionRepository;
@@ -76,16 +77,18 @@ public class NotificationService {
 
     }
 
-    public CompletableFuture<UserNotification> registerToken (UserNotificationDTO userNotificationDTO){
+    public CompletableFuture<String> registerToken (UserNotificationDTO userNotificationDTO){
 
-        CompletableFuture<UserNotification> completableFuture = CompletableFuture.supplyAsync(
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
                 ()->{
                     Optional<UserNotification> optionalUser = userNotiRepo.findById(userNotificationDTO.getId());
+                    optionalUser.orElseThrow(UserNotExist::new);
                     UserNotification userNoti = optionalUser.get();
                     userNoti.setFcmToken(userNotificationDTO.getFcmToken());
                     //userNoti.se(userNotificationDTO.toString());
                     //userNoti.setStatus("status");
-                    return userNotiRepo.saveAndFlush(userNoti);
+                     userNotiRepo.save(userNoti);
+                    return "Se actualizo el token";
                 }
         );
 
