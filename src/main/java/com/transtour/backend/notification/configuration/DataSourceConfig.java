@@ -20,10 +20,13 @@ public class DataSourceConfig {
     @Value("${db.url}")
     private String url;
 
+    @Value("${db.mysql.driver}")
+    private String driver;
+
     @Bean
     public DataSource getDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName("com.mysql.jdbc.Driver");
+        dataSourceBuilder.driverClassName(driver);
         dataSourceBuilder.url(url);
         dataSourceBuilder.username(user);
         dataSourceBuilder.password(password);
