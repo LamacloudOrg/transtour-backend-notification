@@ -12,6 +12,7 @@ public class Constants {
     public static final String PASSENGER = "'passenger'";
     public static final String OBSERVATION = "observation";
     public static final String CAR_DRIVER = "carDriver";
+    public static final String ID = "id";
 
     public static final String TITTLE_NEW_MESSAGE = "Nuevo Viaje";
     public static final String BODY_NEW_MESSAGE = "Tiene asignado un nuevo viaje";
