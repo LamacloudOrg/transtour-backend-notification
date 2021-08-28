@@ -1,6 +1,8 @@
 package com.transtour.backend.notification.controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.transtour.backend.notification.dto.MailRequestDTO;
+import com.transtour.backend.notification.dto.MailResponseDTO;
 import com.transtour.backend.notification.dto.TravelNotificationMobileDTO;
 import com.transtour.backend.notification.dto.UserNotificationDTO;
 import com.transtour.backend.notification.model.UserNotification;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -48,5 +52,14 @@ public class NotificationController {
     @PostMapping("/registerToken")
     private CompletableFuture<String> registerToken(@RequestBody UserNotificationDTO userNotificationDTO) {
         return service.registerToken(userNotificationDTO);
+    }
+
+    @PostMapping("/sendingEmail")
+    public MailResponseDTO sendEmail(@RequestBody MailRequestDTO request) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("Name", request.getName());
+        model.put("location", "Bangalore,India");
+        return service.sendEmail(request, model);
+
     }
 }
