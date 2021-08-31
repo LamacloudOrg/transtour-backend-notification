@@ -123,7 +123,8 @@ public class NotificationService {
             // add attachment
             helper.addAttachment("logo.png", new ClassPathResource("logo.png"));
 
-            Template t = config.getTemplate("email-template.ftl");
+     //     Template t = config.getTemplate("email-template.ftl");
+            Template t = config.getTemplate("emailv1.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
 
             helper.setTo(request.getTo());

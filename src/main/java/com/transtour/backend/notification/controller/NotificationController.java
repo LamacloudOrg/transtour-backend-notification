@@ -57,8 +57,14 @@ public class NotificationController {
     @PostMapping("/sendingEmail")
     public MailResponseDTO sendEmail(@RequestBody MailRequestDTO request) {
         Map<String, Object> model = new HashMap<>();
-        model.put("Name", request.getName());
-        model.put("location", "Bangalore,India");
+        model.put("Name", request.getDriver());
+        model.put("location", "Trans Tour");
+        model.put("origin", request.getOrigin());
+        model.put("destiny", request.getDestiny());
+        model.put("driver", request.getDriver());
+        model.put("date", request.getDate());
+        model.put("time", request.getTime());
+
         return service.sendEmail(request, model);
 
     }
