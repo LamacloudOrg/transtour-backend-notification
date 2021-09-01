@@ -129,7 +129,7 @@ public class NotificationService {
 
             helper.setTo(request.getTo());
             helper.setText(html, true);
-            helper.setSubject(request.getSubject());
+            helper.setSubject("Nuevo Viaje");
             helper.setFrom(request.getFrom());
             sender.send(message);
 

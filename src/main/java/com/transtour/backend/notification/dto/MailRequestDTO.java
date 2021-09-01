@@ -6,12 +6,10 @@ import lombok.Data;
 public class MailRequestDTO {
 
     // Informacion del email
-    private String name;
-    private String to;
-    private String from;
-    private String subject;
     private String signature;
     private String location;
+    private String to;
+    private String from;
 
     // Informacion del viaje
     private String origin;
