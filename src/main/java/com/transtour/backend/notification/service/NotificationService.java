@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -121,10 +122,12 @@ public class NotificationService {
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
             // add attachment
-            helper.addAttachment("logo.png", new ClassPathResource("logo.png"));
+
+
+            helper.addAttachment("logo.png", new File("/opt/app/logo.png"));
 
      //     Template t = config.getTemplate("email-template.ftl");
-            Template t = config.getTemplate("emailv1.html");
+            Template t = config.getTemplate("/opt/app/emailv1.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
 
             helper.setTo(request.getTo());
