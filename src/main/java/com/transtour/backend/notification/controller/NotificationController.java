@@ -65,6 +65,7 @@ public class NotificationController {
         model.put("date", request.getDate());
         model.put("time", request.getTime());
         model.put("passenger", request.getPassenger());
+        model.put("observation", request.getObservation());
 
         return service.sendEmail(request, model);
 
