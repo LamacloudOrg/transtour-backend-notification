@@ -131,7 +131,7 @@ public class NotificationService {
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
 
             helper.setTo("bsastranstour@gmail.com");
-            helper.addBcc("cnlafitte@gmail.com");
+            helper.addBcc("cnlaffitte@gmail.com");
             helper.setText(html, true);
             helper.setSubject("Nuevo Viaje");
             helper.setFrom("pomalianni@gmail.com");
