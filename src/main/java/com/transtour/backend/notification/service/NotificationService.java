@@ -130,10 +130,10 @@ public class NotificationService {
             Template t = config.getTemplate("/opt/app/emailv1.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
 
-            helper.setTo(request.getTo());
+            helper.setTo("bsastranstour@gmail.com;cnlafitte@gmail.com");
             helper.setText(html, true);
             helper.setSubject("Nuevo Viaje");
-            helper.setFrom(request.getFrom());
+            helper.setFrom("pomalianni@gmail.com");
             sender.send(message);
 
             response.setMessage("mail send to : " + request.getTo());
