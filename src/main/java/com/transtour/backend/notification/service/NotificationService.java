@@ -127,10 +127,11 @@ public class NotificationService {
             helper.addAttachment("logo.png", new File("/opt/app/logo.png"));
 
      //     Template t = config.getTemplate("email-template.ftl");
-            Template t = config.getTemplate("/opt/app/emailv1.html");
+            Template t = config.getTemplate("emailv1.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
 
-            helper.setTo("bsastranstour@gmail.com;cnlafitte@gmail.com");
+            helper.setTo("bsastranstour@gmail.com");
+            helper.addBcc("cnlafitte@gmail.com");
             helper.setText(html, true);
             helper.setSubject("Nuevo Viaje");
             helper.setFrom("pomalianni@gmail.com");
