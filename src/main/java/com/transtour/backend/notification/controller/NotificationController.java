@@ -1,11 +1,9 @@
 package com.transtour.backend.notification.controller;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.transtour.backend.notification.dto.MailRequestDTO;
 import com.transtour.backend.notification.dto.MailResponseDTO;
 import com.transtour.backend.notification.dto.TravelNotificationMobileDTO;
 import com.transtour.backend.notification.dto.UserNotificationDTO;
-import com.transtour.backend.notification.model.UserNotification;
 import com.transtour.backend.notification.service.FirebaseMessagingService;
 import com.transtour.backend.notification.service.NotificationService;
 import org.slf4j.Logger;
@@ -13,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -44,6 +43,7 @@ public class NotificationController {
     };
 
     @PostMapping("/sendMessageMobile")
+    @Async
     private ResponseEntity sendNotificationMobile(@RequestBody TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
         ResponseEntity result = firebaseService.sendNotification(travelNotificationMobileDTO);
         return result;

@@ -5,4 +5,8 @@ public class UserNotExist extends RuntimeException{
     public UserNotExist(){
         super("Usuario No existe");
     }
+
+    public UserNotExist(String message){
+        super(message);
+    }
 }
