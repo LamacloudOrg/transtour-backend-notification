@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Table(name = "USER_LOG_NOTIFICATION")
+@Table(name = "user_log_notification")
 @Entity
 @Data
 public class UserLogNotification {

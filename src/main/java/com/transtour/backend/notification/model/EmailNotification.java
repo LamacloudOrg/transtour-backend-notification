@@ -1,16 +1,11 @@
 package com.transtour.backend.notification.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-@Table(name = "EMAIL_NOTIFICATION")
+@Table(name = "email_notification")
 public class EmailNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

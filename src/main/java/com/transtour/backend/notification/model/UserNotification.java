@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.sql.Blob;
 
-@Table(name = "USER_NOTIFICATION")
+@Table(name = "user_notification")
 @Entity
 @Data
 public class UserNotification {
