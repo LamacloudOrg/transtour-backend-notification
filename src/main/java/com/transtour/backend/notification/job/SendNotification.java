@@ -39,7 +39,7 @@ public class SendNotification implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
         List<UserLogNotification> list = userLogRepo
-                .findByStatus(Status.RETRY)
+                .findByStatus(Status.RETRY.toString())
                 .stream()
                 .peek(userLogNotification -> userLogNotification.setMaxRetry(userLogNotification.getMaxRetry()+1))
                 .peek(userLogNotification -> userLogNotification.setStatus(Status.ERROR.toString()))

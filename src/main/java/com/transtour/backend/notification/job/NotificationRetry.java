@@ -28,7 +28,7 @@ public class NotificationRetry implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
         List<UserLogNotification> list = userLogRepo
-                .findByStatus(Status.ERROR)
+                .findByStatus(Status.ERROR.toString())
                 .stream()
                 .filter( userLogNotification -> userLogNotification.getMaxRetry() <5)
                 .peek(userLogNotification -> userLogNotification.setStatus(Status.RETRY.toString()))

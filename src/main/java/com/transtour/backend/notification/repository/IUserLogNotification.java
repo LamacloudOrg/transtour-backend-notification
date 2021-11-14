@@ -12,5 +12,5 @@ import java.util.Optional;
 @Qualifier(value = "UserLogNotification")
 public interface IUserLogNotification  extends JpaRepository<UserLogNotification,Long> {
     Optional<UserLogNotification> findByUser(String id);
-    List<UserLogNotification> findByStatus(Status status);
+    List<UserLogNotification> findByStatus(String status);
 }
