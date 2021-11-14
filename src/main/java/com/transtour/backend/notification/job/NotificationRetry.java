@@ -31,7 +31,7 @@ public class NotificationRetry implements Job {
                 .findByStatus(Status.ERROR)
                 .stream()
                 .filter( userLogNotification -> userLogNotification.getMaxRetry() <5)
-                .peek(userLogNotification -> userLogNotification.setStatus(Status.RETRY))
+                .peek(userLogNotification -> userLogNotification.setStatus(Status.RETRY.toString()))
                 .limit(50)
                 .collect(Collectors.toList());
 

@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -86,11 +88,12 @@ public class FirebaseMessagingService {
 
         logNotification.setMessage(json);
         logNotification.setUser(travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER));
-        logNotification.setStatus(Status.SENDED);
-
+        logNotification.setStatus(Status.SENDED.toString());
+        logNotification.setCreatedAt(LocalDate.now());
+        logNotification.setUpdateAt(LocalTime.now());
 
         if(!result.getStatusCode().is2xxSuccessful() || result.getBody().getSuccess() !=1) {
-            logNotification.setStatus(Status.ERROR);
+            logNotification.setStatus(Status.ERROR.toString());
         }
         userLogRepo.save(logNotification);
 

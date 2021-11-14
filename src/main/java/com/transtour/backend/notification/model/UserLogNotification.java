@@ -19,7 +19,7 @@ public class UserLogNotification {
     private String user;
 
     @Column(name="status")
-    private Status status;
+    private String status;
 
     @Column(name="request")
     private String message;

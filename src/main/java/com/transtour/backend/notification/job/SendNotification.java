@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class SendNotification implements Job {
                 .findByStatus(Status.RETRY)
                 .stream()
                 .peek(userLogNotification -> userLogNotification.setMaxRetry(userLogNotification.getMaxRetry()+1))
-                .peek(userLogNotification -> userLogNotification.setStatus(Status.ERROR))
+                .peek(userLogNotification -> userLogNotification.setStatus(Status.ERROR.toString()))
                 .limit(50)
                 .collect(Collectors.toList());
         userLogRepo.saveAll(list);
@@ -68,7 +69,8 @@ public class SendNotification implements Job {
                                 .findByUser(userLogNotification.getData().get(Constants.CAR_DRIVER));
                         if (userLogNotification1.isPresent()){
                             UserLogNotification userLogNotification2 = userLogNotification1.get();
-                            userLogNotification2.setStatus(Status.SENDED);
+                            userLogNotification2.setStatus(Status.SENDED.toString());
+                            userLogNotification2.setUpdateAt(LocalTime.now());
                             userLogRepo.save(userLogNotification2);
                         }
                        } catch (IOException e) {
