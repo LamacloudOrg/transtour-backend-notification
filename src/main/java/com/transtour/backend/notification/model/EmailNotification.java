@@ -8,8 +8,9 @@ import javax.persistence.*;
 @Table(name = "email_notification")
 public class EmailNotification {
     @Id
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long dni;
 
     @Column(name="user_name")
     private String username;

@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface ENotifiactionRepository extends JpaRepository<EmailNotification,Integer> {
     List<EmailNotification> findByActive(boolean isActive);
+    EmailNotification findByDni(Long dni);
 }

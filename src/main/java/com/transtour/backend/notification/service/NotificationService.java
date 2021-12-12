@@ -116,6 +116,12 @@ public class NotificationService {
     public MailResponseDTO sendEmail(MailRequestDTO request, Map<String, Object> model) {
         MailResponseDTO response = new MailResponseDTO();
         MimeMessage message = sender.createMimeMessage();
+
+        // Llamar a la base a buscar los datos
+        EmailNotification resultEmailDriver = eRpo.findByDni(request.getDriver());
+        model.put("signature", "TransTour");
+        model.put("location", "Capital Federal");
+
         try {
             // set mediaType
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
@@ -123,17 +129,16 @@ public class NotificationService {
             // add attachment
             helper.addAttachment("logo.png", new ClassPathResource("logo.png"));
 
-     //     Template t = config.getTemplate("email-template.ftl");
             Template t = config.getTemplate("emailv1.html");
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
 
-            helper.setTo(request.getTo());
+            helper.setTo(resultEmailDriver.getEmail());
             helper.setText(html, true);
             helper.setSubject("Nuevo Viaje");
-            helper.setFrom(request.getFrom());
+            helper.setFrom("pomalianni@gmail.com");
             sender.send(message);
 
-            response.setMessage("mail send to : " + request.getTo());
+            response.setMessage("mail send to : " + resultEmailDriver.getEmail());
             response.setStatus(Boolean.TRUE);
 
         } catch (MessagingException | IOException | TemplateException e) {
