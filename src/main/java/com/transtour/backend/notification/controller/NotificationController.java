@@ -32,10 +32,6 @@ public class NotificationController {
     @Autowired
     FirebaseMessagingService firebaseService;
 
-    @PostMapping("/byEmail")
-    public CompletableFuture<ResponseEntity> sendMail(@RequestBody String message) throws Exception{
-      return service.sendMail(message).<ResponseEntity>thenApply(emailOk);
-    }
 
     private static Function<Void, ResponseEntity> emailOk = n -> {
         log.error("Se notifico un nuevo viaje");

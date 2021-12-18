@@ -53,48 +53,6 @@ public class NotificationService {
     IUserNotifiactionRepository userNotiRepo;
 
 
-    public CompletableFuture<Void> sendMail(String message) {
-
-        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(
-                ()-> {
-
-                    try {
-
-                        List<EmailNotification> notifications = eRpo.findByActive(true);
-
-                        MimeMessage msg = javaMailSender.createMimeMessage();
-
-                        // true = multipart message
-                        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-                        helper.setTo(notifications.get(0).getEmail());
-
-                        notifications.remove(0);
-
-                        notifications.stream().forEach( notification-> {
-                            try {
-                                helper.addCc(notification.getEmail());
-                            } catch (MessagingException e) {
-                                e.printStackTrace();
-                            }
-                        });
-
-                        helper.setSubject("nuevo viaje");
-
-                        helper.setText("<h1>"+message+"</h1>", true);
-
-                        javaMailSender.send(msg);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        throw new EmailException(e.getLocalizedMessage());
-                    }
-
-                }
-        );
-
-        return completableFuture;
-
-    }
-
     public CompletableFuture<String> registerToken (UserNotificationDTO userNotificationDTO){
 
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
