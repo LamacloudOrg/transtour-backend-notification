@@ -22,13 +22,14 @@ public class CustomClientHttpRequestInterceptor implements ClientHttpRequestInte
         logBody(body);
         return execution.execute(request, body);
     }
+
     private void logRequestDetails(HttpRequest request) {
         LOGGER.info("Headers: {}", request.getHeaders());
         LOGGER.info("Request Method: {}", request.getMethod());
         LOGGER.info("Request URI: {}", request.getURI());
     }
 
-    private void logBody( byte[] body){
+    private void logBody(byte[] body) {
         LOGGER.info("body: {}", body.toString());
     }
 }

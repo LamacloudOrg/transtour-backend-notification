@@ -15,22 +15,22 @@ public class UserLogNotification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private String user;
 
-    @Column(name="status")
+    @Column(name = "status")
     private String status;
 
-    @Column(name="request")
+    @Column(name = "request")
     private String message;
 
-    @Column(name="max_retry")
+    @Column(name = "max_retry")
     private long maxRetry;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDate createdAt;
 
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private LocalTime updateAt;
 
 }

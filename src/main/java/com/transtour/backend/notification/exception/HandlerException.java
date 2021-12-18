@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class HandlerException {
 
     @ExceptionHandler({EmailException.class})
-    public ResponseEntity<ResponseDTO> emailException(Exception e){
+    public ResponseEntity<ResponseDTO> emailException(Exception e) {
         ResponseDTO response = new ResponseDTO(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

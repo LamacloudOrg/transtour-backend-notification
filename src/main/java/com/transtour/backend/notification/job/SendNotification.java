@@ -15,6 +15,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.List;
@@ -41,7 +42,7 @@ public class SendNotification implements Job {
         List<UserLogNotification> list = userLogRepo
                 .findByStatus(Status.RETRY.toString())
                 .stream()
-                .peek(userLogNotification -> userLogNotification.setMaxRetry(userLogNotification.getMaxRetry()+1))
+                .peek(userLogNotification -> userLogNotification.setMaxRetry(userLogNotification.getMaxRetry() + 1))
                 .peek(userLogNotification -> userLogNotification.setStatus(Status.ERROR.toString()))
                 .limit(50)
                 .collect(Collectors.toList());
@@ -54,30 +55,30 @@ public class SendNotification implements Job {
                     ObjectMapper mapper = new ObjectMapper();
                     try {
                         TravelNotificationMobileDTO travelNotificationMobileDTO = mapper.readValue(userLogNotification.getMessage(), TravelNotificationMobileDTO.class);
-                        return  travelNotificationMobileDTO;
+                        return travelNotificationMobileDTO;
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     }
                     return null;
                 })
-                .filter( Objects::nonNull)
+                .filter(Objects::nonNull)
                 .forEach(
-                (userLogNotification -> {
-                    try {
-                        service.sendNotification(userLogNotification);
-                        Optional<UserLogNotification>  userLogNotification1 = userLogRepo
-                                .findByUser(userLogNotification.getData().get(Constants.CAR_DRIVER));
-                        if (userLogNotification1.isPresent()){
-                            UserLogNotification userLogNotification2 = userLogNotification1.get();
-                            userLogNotification2.setStatus(Status.SENDED.toString());
-                            userLogNotification2.setUpdateAt(LocalTime.now());
-                            userLogRepo.save(userLogNotification2);
-                        }
-                       } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                })
-        );
+                        (userLogNotification -> {
+                            try {
+                                service.sendNotification(userLogNotification);
+                                Optional<UserLogNotification> userLogNotification1 = userLogRepo
+                                        .findByUser(userLogNotification.getData().get(Constants.CAR_DRIVER));
+                                if (userLogNotification1.isPresent()) {
+                                    UserLogNotification userLogNotification2 = userLogNotification1.get();
+                                    userLogNotification2.setStatus(Status.SENDED.toString());
+                                    userLogNotification2.setUpdateAt(LocalTime.now());
+                                    userLogRepo.save(userLogNotification2);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        })
+                );
 
 
     }

@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +27,7 @@ import java.util.function.Function;
 @RequestMapping("/v1/notification")
 public class NotificationController {
 
-    private  static Logger log = LoggerFactory.getLogger(NotificationController.class);
+    private static Logger log = LoggerFactory.getLogger(NotificationController.class);
 
     @Autowired
     NotificationService service;

@@ -3,67 +3,57 @@ package com.transtour.backend.notification.service;
 import com.transtour.backend.notification.dto.MailRequestDTO;
 import com.transtour.backend.notification.dto.MailResponseDTO;
 import com.transtour.backend.notification.dto.UserNotificationDTO;
-import com.transtour.backend.notification.exception.EmailException;
 import com.transtour.backend.notification.exception.UserNotExist;
 import com.transtour.backend.notification.model.EmailNotification;
 import com.transtour.backend.notification.model.UserNotification;
 import com.transtour.backend.notification.repository.ENotifiactionRepository;
 import com.transtour.backend.notification.repository.IUserNotifiactionRepository;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.List;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-
 @Service
 public class NotificationService {
-
-    @Autowired
-    private JavaMailSender javaMailSender;
-
-    @Autowired
-    private JavaMailSender sender;
-
-    @Autowired
-    private Configuration config;
 
     @Qualifier(value = "EmailNotification")
     @Autowired
     ENotifiactionRepository eRpo;
-
     @Qualifier(value = "UserNotification")
     @Autowired
     IUserNotifiactionRepository userNotiRepo;
+    @Autowired
+    private JavaMailSender javaMailSender;
+    @Autowired
+    private JavaMailSender sender;
+    @Autowired
+    private Configuration config;
 
-
-    public CompletableFuture<String> registerToken (UserNotificationDTO userNotificationDTO){
+    public CompletableFuture<String> registerToken(UserNotificationDTO userNotificationDTO) {
 
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
-                ()->{
+                () -> {
                     Optional<UserNotification> optionalUser = userNotiRepo.findById(userNotificationDTO.getId());
                     optionalUser.orElseThrow(UserNotExist::new);
                     UserNotification userNoti = optionalUser.get();
                     userNoti.setFcmToken(userNotificationDTO.getFcmToken());
                     //userNoti.se(userNotificationDTO.toString());
                     //userNoti.setStatus("status");
-                     userNotiRepo.save(userNoti);
+                    userNotiRepo.save(userNoti);
                     return "Se actualizo el token";
                 }
         );
@@ -100,7 +90,7 @@ public class NotificationService {
             response.setStatus(Boolean.TRUE);
 
         } catch (MessagingException | IOException | TemplateException e) {
-            response.setMessage("Mail Sending failure : "+e.getMessage());
+            response.setMessage("Mail Sending failure : " + e.getMessage());
             response.setStatus(Boolean.FALSE);
         }
 

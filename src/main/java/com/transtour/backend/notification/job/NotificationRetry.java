@@ -9,7 +9,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class NotificationRetry implements Job {
         List<UserLogNotification> list = userLogRepo
                 .findByStatus(Status.ERROR.toString())
                 .stream()
-                .filter( userLogNotification -> userLogNotification.getMaxRetry() <5)
+                .filter(userLogNotification -> userLogNotification.getMaxRetry() < 5)
                 .peek(userLogNotification -> userLogNotification.setStatus(Status.RETRY.toString()))
                 .limit(50)
                 .collect(Collectors.toList());

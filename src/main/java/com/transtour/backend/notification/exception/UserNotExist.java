@@ -1,12 +1,12 @@
 package com.transtour.backend.notification.exception;
 
-public class UserNotExist extends RuntimeException{
+public class UserNotExist extends RuntimeException {
 
-    public UserNotExist(){
+    public UserNotExist() {
         super("Usuario No existe");
     }
 
-    public UserNotExist(String message){
+    public UserNotExist(String message) {
         super(message);
     }
 }

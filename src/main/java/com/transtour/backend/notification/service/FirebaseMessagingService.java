@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.dozermapper.core.Mapper;
 import com.transtour.backend.notification.controller.NotificationController;
+import com.transtour.backend.notification.dto.ResultDTO;
 import com.transtour.backend.notification.dto.TravelInfoNotificationMobileDTO;
 import com.transtour.backend.notification.dto.TravelNotificationMobileDTO;
-import com.transtour.backend.notification.dto.ResultDTO;
 import com.transtour.backend.notification.exception.NotificationMobileError;
 import com.transtour.backend.notification.exception.UserNotExist;
 import com.transtour.backend.notification.model.Status;
@@ -21,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -65,19 +68,20 @@ public class FirebaseMessagingService {
         TravelNotificationMobileDTO travelNotificationMobileDTO1 = setToken(travelNotificationMobileDTO);
         callSendNotificationToMobile(travelNotificationMobileDTO1);
         TravelInfoNotificationMobileDTO travelNotificationMobileDTO2 = new TravelInfoNotificationMobileDTO();
-        mapper.map(travelNotificationMobileDTO1,travelNotificationMobileDTO2);
+        mapper.map(travelNotificationMobileDTO1, travelNotificationMobileDTO2);
         ResponseEntity response = callSendNotificationToMobile(travelNotificationMobileDTO2);
         return response;
     }
+
     @Async
-    public void callSendNotificationToMobile (TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
+    public void callSendNotificationToMobile(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
 
         HttpEntity<TravelNotificationMobileDTO> entity = new HttpEntity<>(travelNotificationMobileDTO, getHttpHeaders());
         ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
 
     }
 
-    public ResponseEntity callSendNotificationToMobile (TravelInfoNotificationMobileDTO travelInfoNotificationMobileDTO) throws IOException {
+    public ResponseEntity callSendNotificationToMobile(TravelInfoNotificationMobileDTO travelInfoNotificationMobileDTO) throws IOException {
 
         HttpEntity<TravelInfoNotificationMobileDTO> entity = new HttpEntity<>(travelInfoNotificationMobileDTO, getHttpHeaders());
         ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
@@ -92,25 +96,25 @@ public class FirebaseMessagingService {
         logNotification.setCreatedAt(LocalDate.now());
         logNotification.setUpdateAt(LocalTime.now());
 
-        if(!result.getStatusCode().is2xxSuccessful() || result.getBody().getSuccess() !=1) {
+        if (!result.getStatusCode().is2xxSuccessful() || result.getBody().getSuccess() != 1) {
             logNotification.setStatus(Status.ERROR.toString());
         }
         userLogRepo.save(logNotification);
 
-        if (logNotification.getStatus().equals(Status.ERROR)){
-            throw new NotificationMobileError("no se pudo notificar al chofer"+logNotification.getUser());
+        if (logNotification.getStatus().equals(Status.ERROR)) {
+            throw new NotificationMobileError("no se pudo notificar al chofer" + logNotification.getUser());
         }
 
-        return  ResponseEntity.ok("Se envio notificacion con la info");
+        return ResponseEntity.ok("Se envio notificacion con la info");
     }
 
     private TravelNotificationMobileDTO setToken(TravelNotificationMobileDTO travelNotificationMobileDTO) {
-        Optional.ofNullable(travelNotificationMobileDTO.getData().getOrDefault(Constants.CAR_DRIVER,"2")).orElse("2");
+        Optional.ofNullable(travelNotificationMobileDTO.getData().getOrDefault(Constants.CAR_DRIVER, "2")).orElse("2");
         String carDriver = travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
 
-        log.debug("carDriver",carDriver);
+        log.debug("carDriver", carDriver);
         Optional<UserNotification> userNotification = userNotiRepo.findById(Long.parseLong(carDriver));
-        if (!userNotification.isPresent()) throw new UserNotExist("el chofer no se encuentra registrado"+carDriver);
+        if (!userNotification.isPresent()) throw new UserNotExist("el chofer no se encuentra registrado" + carDriver);
 
         travelNotificationMobileDTO.setTo(userNotification.get().getFcmToken());
         travelNotificationMobileDTO.getData().remove("car-driver");

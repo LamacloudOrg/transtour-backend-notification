@@ -9,7 +9,8 @@ import java.util.List;
 
 @Qualifier("EmailNotification")
 @Repository
-public interface ENotifiactionRepository extends JpaRepository<EmailNotification,Integer> {
+public interface ENotifiactionRepository extends JpaRepository<EmailNotification, Integer> {
     List<EmailNotification> findByActive(boolean isActive);
+
     EmailNotification findByDni(Long dni);
 }
