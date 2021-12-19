@@ -67,7 +67,7 @@ public class SendNotification implements Job {
                             try {
                                 service.sendNotification(userLogNotification);
                                 Optional<UserLogNotification> userLogNotification1 = userLogRepo
-                                        .findByUser(userLogNotification.getData().get(Constants.CAR_DRIVER));
+                                        .findByUser((Long) userLogNotification.getData().get(Constants.CAR_DRIVER));
                                 if (userLogNotification1.isPresent()) {
                                     UserLogNotification userLogNotification2 = userLogNotification1.get();
                                     userLogNotification2.setStatus(Status.SENDED.toString());
