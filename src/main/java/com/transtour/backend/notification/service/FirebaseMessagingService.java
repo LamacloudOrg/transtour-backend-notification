@@ -69,15 +69,14 @@ public class FirebaseMessagingService {
         callSendNotificationToMobile(travelNotificationMobileDTO1);
         TravelInfoNotificationMobileDTO travelNotificationMobileDTO2 = new TravelInfoNotificationMobileDTO();
         mapper.map(travelNotificationMobileDTO1, travelNotificationMobileDTO2);
-        ResponseEntity response = callSendNotificationToMobile(travelNotificationMobileDTO2);
-        return response;
+        return callSendNotificationToMobile(travelNotificationMobileDTO2);
     }
 
     @Async
     public void callSendNotificationToMobile(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
 
         HttpEntity<TravelNotificationMobileDTO> entity = new HttpEntity<>(travelNotificationMobileDTO, getHttpHeaders());
-        ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
+        restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
 
     }
 
@@ -91,7 +90,7 @@ public class FirebaseMessagingService {
         String json = ow.writeValueAsString(travelInfoNotificationMobileDTO);
 
         logNotification.setMessage(json);
-        logNotification.setUser(travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER));
+        logNotification.setUser((String) travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER));
         logNotification.setStatus(Status.SENDED.toString());
         logNotification.setCreatedAt(LocalDate.now());
         logNotification.setUpdateAt(LocalTime.now());
@@ -110,7 +109,7 @@ public class FirebaseMessagingService {
 
     private TravelNotificationMobileDTO setToken(TravelNotificationMobileDTO travelNotificationMobileDTO) {
         Optional.ofNullable(travelNotificationMobileDTO.getData().getOrDefault(Constants.CAR_DRIVER, "2")).orElse("2");
-        String carDriver = travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
+        String carDriver = (String) travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
 
         log.debug("carDriver", carDriver);
         Optional<UserNotification> userNotification = userNotiRepo.findById(Long.parseLong(carDriver));

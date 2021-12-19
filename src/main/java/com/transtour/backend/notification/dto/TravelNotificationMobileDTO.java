@@ -9,6 +9,6 @@ import java.util.Map;
 public class TravelNotificationMobileDTO implements Serializable {
 
     private String to;
-    private Map<String, String> data;
+    private Map<String, Object> data;
     private Map<String, String> notification;
 }

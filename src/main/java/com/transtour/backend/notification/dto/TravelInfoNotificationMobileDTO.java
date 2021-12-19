@@ -8,5 +8,5 @@ import java.util.Map;
 public class TravelInfoNotificationMobileDTO {
 
     private String to;
-    private Map<String, String> data;
+    private Map<String, Object> data;
 }
