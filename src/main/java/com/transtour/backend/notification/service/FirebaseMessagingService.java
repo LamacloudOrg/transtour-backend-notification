@@ -109,10 +109,10 @@ public class FirebaseMessagingService {
 
     private TravelNotificationMobileDTO setToken(TravelNotificationMobileDTO travelNotificationMobileDTO) {
         Optional.ofNullable(travelNotificationMobileDTO.getData().getOrDefault(Constants.CAR_DRIVER, "2")).orElse("2");
-        String carDriver = (String) travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
+        Long carDriver = (Long) travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
 
         log.debug("carDriver", carDriver);
-        Optional<UserNotification> userNotification = userNotiRepo.findById(Long.parseLong(carDriver));
+        Optional<UserNotification> userNotification = userNotiRepo.findById(carDriver);
         if (!userNotification.isPresent()) throw new UserNotExist("el chofer no se encuentra registrado" + carDriver);
 
         travelNotificationMobileDTO.setTo(userNotification.get().getFcmToken());
