@@ -90,7 +90,7 @@ public class FirebaseMessagingService {
         String json = ow.writeValueAsString(travelInfoNotificationMobileDTO);
 
         logNotification.setMessage(json);
-        logNotification.setUser((String) travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER));
+        logNotification.setUser(String.valueOf(travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER)));
         logNotification.setStatus(Status.SENDED.toString());
         logNotification.setCreatedAt(LocalDate.now());
         logNotification.setUpdateAt(LocalTime.now());
