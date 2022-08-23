@@ -1,9 +1,6 @@
 package com.transtour.backend.notification.controller;
 
-import com.transtour.backend.notification.dto.MailRequestDTO;
-import com.transtour.backend.notification.dto.MailResponseDTO;
-import com.transtour.backend.notification.dto.TravelNotificationMobileDTO;
-import com.transtour.backend.notification.dto.UserNotificationDTO;
+import com.transtour.backend.notification.dto.*;
 import com.transtour.backend.notification.service.FirebaseMessagingService;
 import com.transtour.backend.notification.service.NotificationService;
 import org.slf4j.Logger;
@@ -66,5 +63,10 @@ public class NotificationController {
 
         return service.sendEmail(request, model);
 
+    }
+
+    @PostMapping("/activation/code")
+    public CompletableFuture<MailResponseDTO> sendCodeByMail(@RequestBody ActivationAccountDTO activationAccountDTO) {
+        return service.sendCodeNotifcation(activationAccountDTO);
     }
 }

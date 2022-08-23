@@ -1,5 +1,6 @@
 package com.transtour.backend.notification.service;
 
+import com.transtour.backend.notification.dto.ActivationAccountDTO;
 import com.transtour.backend.notification.dto.MailRequestDTO;
 import com.transtour.backend.notification.dto.MailResponseDTO;
 import com.transtour.backend.notification.dto.UserNotificationDTO;
@@ -23,6 +24,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -95,5 +97,51 @@ public class NotificationService {
         }
 
         return response;
+    }
+
+    public CompletableFuture<MailResponseDTO> sendCodeNotifcation(ActivationAccountDTO activationAccountDTO) {
+        CompletableFuture<MailResponseDTO> completableFuture = CompletableFuture.supplyAsync(
+                ()->{
+                    MailResponseDTO response = new MailResponseDTO();
+                    MimeMessage message = sender.createMimeMessage();
+
+                    // Llamar a la base a buscar los datos
+                    EmailNotification resultEmailDriver = eRpo.findByDni(activationAccountDTO.getDriver());
+                    Map<String, Object> model = new HashMap<>();
+
+                    model.put("code", activationAccountDTO.getCode());
+                    model.put("driver", resultEmailDriver.getUsername());
+
+                    try {
+                        // set mediaType
+                        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                                StandardCharsets.UTF_8.name());
+                        // add attachment
+                        helper.addAttachment("logo.png", new ClassPathResource("logo.png"));
+
+                        Template t = config.getTemplate("code-activation.html");
+                        String html = FreeMarkerTemplateUtils.processTemplateIntoString(t, model);
+
+                        helper.setTo(resultEmailDriver.getEmail());
+                        helper.setText(html, true);
+                        helper.setSubject("Account Activation");
+                        helper.setFrom("pomalianni@gmail.com");
+                        sender.send(message);
+
+                        response.setMessage("mail send to : " + resultEmailDriver.getEmail());
+                        response.setStatus(Boolean.TRUE);
+
+                    } catch (MessagingException | IOException | TemplateException e) {
+                        response.setMessage("Mail Sending failure : " + e.getMessage());
+                        response.setStatus(Boolean.FALSE);
+                    }
+
+                    return response;
+                }
+        );
+
+        return  completableFuture;
+
+
     }
 }
