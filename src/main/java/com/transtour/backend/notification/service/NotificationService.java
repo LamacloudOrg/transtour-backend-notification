@@ -109,8 +109,8 @@ public class NotificationService {
                     EmailNotification resultEmailDriver = eRpo.findByDni(activationAccountDTO.getDriver());
                     Map<String, Object> model = new HashMap<>();
 
-                    model.put("code", activationAccountDTO.getCode());
-                    model.put("driver", resultEmailDriver.getUsername());
+                    model.put("code", activationAccountDTO.getCode().toString());
+                    model.put("driver", resultEmailDriver.getUsername().toString());
 
                     try {
                         // set mediaType
