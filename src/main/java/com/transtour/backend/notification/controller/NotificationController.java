@@ -42,6 +42,7 @@ public class NotificationController {
     @Async
     private ResponseEntity sendNotificationMobile(@RequestBody TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
         ResponseEntity result = firebaseService.sendNotification(travelNotificationMobileDTO);
+        log.debug("se notifico x firebase");
         return result;
     }
 

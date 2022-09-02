@@ -33,4 +33,16 @@ public class UserLogNotification {
     @Column(name = "updated_at")
     private LocalTime updateAt;
 
+    @Override
+    public String toString() {
+        return "UserLogNotification{" +
+                "id=" + id +
+                ", user='" + user + '\'' +
+                ", status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", maxRetry=" + maxRetry +
+                ", createdAt=" + createdAt +
+                ", updateAt=" + updateAt +
+                '}';
+    }
 }

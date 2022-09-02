@@ -1,5 +1,6 @@
 package com.transtour.backend.notification.service;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.github.dozermapper.core.Mapper;
@@ -7,7 +8,6 @@ import com.transtour.backend.notification.controller.NotificationController;
 import com.transtour.backend.notification.dto.ResultDTO;
 import com.transtour.backend.notification.dto.TravelInfoNotificationMobileDTO;
 import com.transtour.backend.notification.dto.TravelNotificationMobileDTO;
-import com.transtour.backend.notification.exception.NotificationMobileError;
 import com.transtour.backend.notification.exception.UserNotExist;
 import com.transtour.backend.notification.model.Status;
 import com.transtour.backend.notification.model.UserLogNotification;
@@ -64,7 +64,7 @@ public class FirebaseMessagingService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ResponseEntity sendNotification(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
+    public ResponseEntity<?> sendNotification(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
         log.info("notificando viaje " + travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER).toString());
         Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf(String.valueOf(travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER))));
         if (userNotification.isPresent()) {
@@ -75,6 +75,7 @@ public class FirebaseMessagingService {
         String device = userNotification.get().getDevice(); //IOS or ANDROID
         travelNotificationMobileDTO.setTo(userNotification.get().getFcmToken()); //seteo token firebase
         //travelNotificationMobileDTO.getData().remove("car-driver");
+
 
         // Si es IOS se envia 2 veces x issue en firebase.
         if (device.equals("IOS")) {
@@ -88,37 +89,60 @@ public class FirebaseMessagingService {
 
     @Async
     public void callSendNotificationToMobile(TravelNotificationMobileDTO travelNotificationMobileDTO, String device) throws IOException {
+        try {
+            HttpEntity<TravelNotificationMobileDTO> entity = new HttpEntity<>(travelNotificationMobileDTO, getHttpHeaders(device));
+            ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
 
-        HttpEntity<TravelNotificationMobileDTO> entity = new HttpEntity<>(travelNotificationMobileDTO, getHttpHeaders(device));
-        restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
+            if (!result.getStatusCode().is2xxSuccessful() || result.getBody().getSuccess() != 1) {
+                log.info("No se pudo enviar la notificacion" + Status.ERROR);
+            } else {
+                log.info("Se envio correctamente");
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
     }
 
     public ResponseEntity callSendNotificationToMobile(TravelInfoNotificationMobileDTO travelInfoNotificationMobileDTO, String device) throws IOException {
 
-        HttpEntity<TravelInfoNotificationMobileDTO> entity = new HttpEntity<>(travelInfoNotificationMobileDTO, getHttpHeaders(device));
-        ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
-        UserLogNotification logNotification = new UserLogNotification();
+        try {
+            HttpEntity<TravelInfoNotificationMobileDTO> entity = new HttpEntity<>(travelInfoNotificationMobileDTO, getHttpHeaders(device));
+            ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
+            UserLogNotification logNotification = new UserLogNotification();
 
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(travelInfoNotificationMobileDTO);
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(travelInfoNotificationMobileDTO);
 
-        logNotification.setMessage(json);
-        logNotification.setUser(String.valueOf(travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER)));
-        logNotification.setStatus(Status.SENDED.toString());
-        logNotification.setCreatedAt(LocalDate.now());
-        logNotification.setUpdateAt(LocalTime.now());
+            logNotification.setMessage(json);
+            logNotification.setUser(String.valueOf(travelInfoNotificationMobileDTO.getData().get(Constants.CAR_DRIVER)));
+            logNotification.setStatus(Status.SENDED.toString());
+            logNotification.setCreatedAt(LocalDate.now());
+            logNotification.setUpdateAt(LocalTime.now());
 
-        if (!result.getStatusCode().is2xxSuccessful() || result.getBody().getSuccess() != 1) {
-            logNotification.setStatus(Status.ERROR.toString());
+            if (!result.getStatusCode().is2xxSuccessful() || result.getBody().getSuccess() != 1) {
+                logNotification.setStatus(Status.ERROR.toString());
+            }
+            userLogRepo.save(logNotification);
+
+            log.error("save to db " + logNotification.toString());
+
+
+            if (logNotification.getStatus().equals(Status.ERROR)) {
+                return ResponseEntity.badRequest().body("no se pudo notificar al chofer" + logNotification.getUser());
+            }
+            return ResponseEntity.ok("Se envio notificacion con la info");
+
+        } catch (IllegalArgumentException e) {
+            log.error("error save notification " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+
+        } catch (JsonMappingException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
-        userLogRepo.save(logNotification);
 
-        if (logNotification.getStatus().equals(Status.ERROR)) {
-            throw new NotificationMobileError("no se pudo notificar al chofer" + logNotification.getUser());
-        }
-
-        return ResponseEntity.ok("Se envio notificacion con la info");
     }
 
     private TravelNotificationMobileDTO setToken(TravelNotificationMobileDTO travelNotificationMobileDTO) {
@@ -141,6 +165,7 @@ public class FirebaseMessagingService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         if (device.equals("IOS")) headers.add(HttpHeaders.AUTHORIZATION, TOKEN_IOS);
         else headers.add(HttpHeaders.AUTHORIZATION, TOKEN_ANDROID);
+        log.debug("token-header", headers.get(HttpHeaders.AUTHORIZATION));
         return headers;
     }
 }
