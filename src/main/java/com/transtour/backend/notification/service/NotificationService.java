@@ -53,6 +53,7 @@ public class NotificationService {
                     optionalUser.orElseThrow(UserNotExist::new);
                     UserNotification userNoti = optionalUser.get();
                     userNoti.setFcmToken(userNotificationDTO.getFcmToken());
+                    userNoti.setDevice(userNotificationDTO.getDevice());
                     //userNoti.se(userNotificationDTO.toString());
                     //userNoti.setStatus("status");
                     userNotiRepo.save(userNoti);
