@@ -9,4 +9,5 @@ public class UserNotificationDTO implements Serializable {
 
     private Long id;
     private String fcmToken;
+    private String device;
 }
