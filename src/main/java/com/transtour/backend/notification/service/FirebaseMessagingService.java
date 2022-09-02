@@ -68,13 +68,17 @@ public class FirebaseMessagingService {
         log.info("notificando viaje " + travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER).toString());
         Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf(String.valueOf(travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER))));
         if (userNotification.isPresent()) {
+            log.error("driver not found");
             return ResponseEntity.badRequest().body("Driver not found");
         }
 
         //send notification
         String device = userNotification.get().getDevice(); //IOS or ANDROID
+        log.info("device " + device);
         travelNotificationMobileDTO.setTo(userNotification.get().getFcmToken()); //seteo token firebase
         //travelNotificationMobileDTO.getData().remove("car-driver");
+
+        log.info("seteo de token");
 
 
         // Si es IOS se envia 2 veces x issue en firebase.
@@ -84,6 +88,7 @@ public class FirebaseMessagingService {
 
         TravelInfoNotificationMobileDTO travelNotificationMobileDTO2 = new TravelInfoNotificationMobileDTO();
         mapper.map(travelNotificationMobileDTO, travelNotificationMobileDTO2);
+        log.error("enviando notificacion");
         return callSendNotificationToMobile(travelNotificationMobileDTO2, device);
     }
 
