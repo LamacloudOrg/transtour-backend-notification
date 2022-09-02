@@ -19,4 +19,7 @@ public class UserNotification {
     @Column(name = "fcm_token")
     private String fcmToken;
 
+    @Column(name = "device")
+    private String device;
+
 }

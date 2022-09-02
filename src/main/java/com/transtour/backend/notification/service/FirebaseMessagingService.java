@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -40,6 +40,11 @@ public class FirebaseMessagingService {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
     private static final String SEND_NOTIFICATION_TO_MOBILE = "https://fcm.googleapis.com/fcm/send";
+
+    @Value("${token-header-android}")
+    String TOKEN_ANDROID;
+    @Value("${token-header-ios}")
+    String TOKEN_IOS;
 
     private RestTemplate restTemplate;
 
@@ -51,13 +56,8 @@ public class FirebaseMessagingService {
     @Autowired
     IUserLogNotification userLogRepo;
 
-
     @Autowired
     private Mapper mapper;
-
-
-    @Value("${token-header}")
-    String token;
 
     @Autowired
     public FirebaseMessagingService(RestTemplateBuilder restTemplateBuilder) {
@@ -65,24 +65,38 @@ public class FirebaseMessagingService {
     }
 
     public ResponseEntity sendNotification(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
-        TravelNotificationMobileDTO travelNotificationMobileDTO1 = setToken(travelNotificationMobileDTO);
-        callSendNotificationToMobile(travelNotificationMobileDTO1);
+
+        Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf(travelNotificationMobileDTO.getNotification().get(Constants.CAR_DRIVER)));
+        if (userNotification.isPresent()) {
+            return ResponseEntity.badRequest().body("Driver not found");
+        }
+
+        //send notification
+        String device = userNotification.get().getDevice(); //IOS or ANDROID
+        travelNotificationMobileDTO.setTo(userNotification.get().getFcmToken()); //seteo token firebase
+        travelNotificationMobileDTO.getData().remove("car-driver");
+
+        // Si es IOS se envia 2 veces x issue en firebase.
+        if (device.equals("IOS")) {
+            callSendNotificationToMobile(travelNotificationMobileDTO, device);
+        }
+
         TravelInfoNotificationMobileDTO travelNotificationMobileDTO2 = new TravelInfoNotificationMobileDTO();
-        mapper.map(travelNotificationMobileDTO1, travelNotificationMobileDTO2);
-        return callSendNotificationToMobile(travelNotificationMobileDTO2);
+        mapper.map(travelNotificationMobileDTO, travelNotificationMobileDTO2);
+        return callSendNotificationToMobile(travelNotificationMobileDTO2, device);
     }
 
     @Async
-    public void callSendNotificationToMobile(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
+    public void callSendNotificationToMobile(TravelNotificationMobileDTO travelNotificationMobileDTO, String device) throws IOException {
 
-        HttpEntity<TravelNotificationMobileDTO> entity = new HttpEntity<>(travelNotificationMobileDTO, getHttpHeaders());
+        HttpEntity<TravelNotificationMobileDTO> entity = new HttpEntity<>(travelNotificationMobileDTO, getHttpHeaders(device));
         restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
 
     }
 
-    public ResponseEntity callSendNotificationToMobile(TravelInfoNotificationMobileDTO travelInfoNotificationMobileDTO) throws IOException {
+    public ResponseEntity callSendNotificationToMobile(TravelInfoNotificationMobileDTO travelInfoNotificationMobileDTO, String device) throws IOException {
 
-        HttpEntity<TravelInfoNotificationMobileDTO> entity = new HttpEntity<>(travelInfoNotificationMobileDTO, getHttpHeaders());
+        HttpEntity<TravelInfoNotificationMobileDTO> entity = new HttpEntity<>(travelInfoNotificationMobileDTO, getHttpHeaders(device));
         ResponseEntity<ResultDTO> result = restTemplate.postForEntity(SEND_NOTIFICATION_TO_MOBILE, entity, ResultDTO.class);
         UserLogNotification logNotification = new UserLogNotification();
 
@@ -121,12 +135,12 @@ public class FirebaseMessagingService {
         return travelNotificationMobileDTO;
     }
 
-    private HttpHeaders getHttpHeaders() {
+    private HttpHeaders getHttpHeaders(String device) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.add(HttpHeaders.AUTHORIZATION, token);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        if (device.equals("IOS")) headers.add(HttpHeaders.AUTHORIZATION, TOKEN_IOS);
+        else headers.add(HttpHeaders.AUTHORIZATION, TOKEN_ANDROID);
         return headers;
     }
-
 }
