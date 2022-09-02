@@ -66,7 +66,7 @@ public class FirebaseMessagingService {
 
     public ResponseEntity sendNotification(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
 
-        Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf(travelNotificationMobileDTO.getNotification().get(Constants.CAR_DRIVER)));
+        Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf((String) travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER)));
         if (userNotification.isPresent()) {
             return ResponseEntity.badRequest().body("Driver not found");
         }
@@ -74,7 +74,7 @@ public class FirebaseMessagingService {
         //send notification
         String device = userNotification.get().getDevice(); //IOS or ANDROID
         travelNotificationMobileDTO.setTo(userNotification.get().getFcmToken()); //seteo token firebase
-        travelNotificationMobileDTO.getData().remove("car-driver");
+        //travelNotificationMobileDTO.getData().remove("car-driver");
 
         // Si es IOS se envia 2 veces x issue en firebase.
         if (device.equals("IOS")) {
