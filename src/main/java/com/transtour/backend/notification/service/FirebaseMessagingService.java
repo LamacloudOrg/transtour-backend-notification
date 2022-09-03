@@ -65,10 +65,9 @@ public class FirebaseMessagingService {
     }
 
     public ResponseEntity<?> sendNotification(TravelNotificationMobileDTO travelNotificationMobileDTO) throws IOException {
-        String carDriver = travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER).toString();
-        Long carDriverId = Long.parseLong(carDriver);
-        log.info("notificando viaje " + carDriverId);
-        Optional<UserNotification> userNotification = userNotiRepo.findById(carDriverId);
+        Integer carDriver = (Integer) travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
+        log.info("notificando viaje " + carDriver.toString());
+        Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf(carDriver));
         if (userNotification.isPresent()) {
             log.error("driver not found");
             return ResponseEntity.badRequest().body("Driver not found");
