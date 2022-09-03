@@ -68,7 +68,7 @@ public class FirebaseMessagingService {
         Integer carDriver = (Integer) travelNotificationMobileDTO.getData().get(Constants.CAR_DRIVER);
         log.info("notificando viaje " + carDriver.toString());
         Optional<UserNotification> userNotification = userNotiRepo.findById(Long.valueOf(carDriver));
-        if (userNotification.isPresent()) {
+        if (!userNotification.isPresent()) {
             log.error("driver not found");
             return ResponseEntity.badRequest().body("Driver not found");
         }
