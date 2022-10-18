@@ -1,22 +1,23 @@
 package com.transtour.backend.notification.service;
 
-import com.transtour.backend.notification.dto.ActivationAccountDTO;
-import com.transtour.backend.notification.dto.MailRequestDTO;
-import com.transtour.backend.notification.dto.MailResponseDTO;
-import com.transtour.backend.notification.dto.UserNotificationDTO;
+import com.transtour.backend.notification.dto.*;
 import com.transtour.backend.notification.exception.UserNotExist;
 import com.transtour.backend.notification.model.EmailNotification;
 import com.transtour.backend.notification.model.UserNotification;
 import com.transtour.backend.notification.repository.ENotifiactionRepository;
 import com.transtour.backend.notification.repository.IUserNotifiactionRepository;
+import com.transtour.backend.notification.repository.IVoucherRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -24,6 +25,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -35,15 +37,20 @@ public class NotificationService {
     @Qualifier(value = "EmailNotification")
     @Autowired
     ENotifiactionRepository eRpo;
+
     @Qualifier(value = "UserNotification")
     @Autowired
     IUserNotifiactionRepository userNotiRepo;
-    @Autowired
-    private JavaMailSender javaMailSender;
+
     @Autowired
     private JavaMailSender sender;
+
     @Autowired
     private Configuration config;
+
+    @Autowired
+    @Qualifier("VoucherClient")
+    private IVoucherRepository voucherRepository;
 
     public CompletableFuture<String> registerToken(UserNotificationDTO userNotificationDTO) {
 
@@ -144,5 +151,30 @@ public class NotificationService {
         return  completableFuture;
 
 
+    }
+    public CompletableFuture<String> sendPdfToPassenger(NotificationVoucherDTO notificationVoucherDTO) {
+
+        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        String pdf = voucherRepository.getVoucher(notificationVoucherDTO.getVoucherId());
+                        byte[] data = Base64.getDecoder().decode(pdf);
+
+                        MimeMessage message = sender.createMimeMessage();
+                        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                                StandardCharsets.UTF_8.name());
+                        helper.addAttachment("voucher.pdf", new ByteArrayResource(data));
+                        helper.setFrom("pomalianni@gmail.com");
+                        helper.setTo(notificationVoucherDTO.getPassengerEmail());
+                        helper.setSubject("Voucher en PDF");
+
+                    } catch (MessagingException e) {
+                        e.printStackTrace();
+                    }
+                    return "Se envio el pdf por email";
+                }
+        );
+
+        return completableFuture;
     }
 }

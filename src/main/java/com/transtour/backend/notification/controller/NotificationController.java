@@ -70,4 +70,10 @@ public class NotificationController {
     public CompletableFuture<MailResponseDTO> sendCodeByMail(@RequestBody ActivationAccountDTO activationAccountDTO) {
         return service.sendCodeNotifcation(activationAccountDTO);
     }
+
+    @PostMapping("/sendPdfToPassenger")
+    public CompletableFuture<String> sendPdfToPassenger(@RequestBody NotificationVoucherDTO notificationVoucherDTO) {
+        return service.sendPdfToPassenger(notificationVoucherDTO);
+    }
+
 }
