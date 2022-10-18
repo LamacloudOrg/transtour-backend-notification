@@ -11,6 +11,6 @@ public class MailRequestDTO {
     private Long driver;
     private String date;
     private String time;
-    private String passenger;
+    private String passengerName;
     private String observation;
 }

@@ -59,7 +59,7 @@ public class NotificationController {
         model.put("driver", request.getDriver());
         model.put("date", request.getDate());
         model.put("time", request.getTime());
-        model.put("passenger", request.getPassenger());
+        model.put("passengerName", request.getPassengerName());
         model.put("observation", request.getObservation());
 
         return service.sendEmail(request, model);
