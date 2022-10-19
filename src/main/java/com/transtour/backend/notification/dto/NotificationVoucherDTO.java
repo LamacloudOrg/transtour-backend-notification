@@ -5,6 +5,6 @@ import java.io.Serializable;
 
 @Data
 public class NotificationVoucherDTO implements Serializable{
-    private String voucherId;
+    private String travelId;
     private String passengerEmail;
 }

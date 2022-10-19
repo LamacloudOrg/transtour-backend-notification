@@ -157,7 +157,7 @@ public class NotificationService {
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
                 () -> {
                     try {
-                        String pdf = voucherRepository.getVoucher(notificationVoucherDTO.getVoucherId());
+                        String pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
                         byte[] data = Base64.getDecoder().decode(pdf);
 
                         MimeMessage message = sender.createMimeMessage();
