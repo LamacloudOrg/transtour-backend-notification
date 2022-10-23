@@ -11,15 +11,15 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
@@ -28,7 +28,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -54,6 +53,8 @@ public class NotificationService {
     @Autowired
     @Qualifier("VoucherClient")
     private IVoucherRepository voucherRepository;
+
+    private static final Logger LOG = LoggerFactory.getLogger(NotificationService.class);
 
     public CompletableFuture<String> registerToken(UserNotificationDTO userNotificationDTO) {
 
@@ -160,8 +161,13 @@ public class NotificationService {
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
                 () -> {
                     try {
-                        ResponseEntity pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
-                        byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
+                        LOG.info("Iniciando sendPdfToPassenger Notificaciones");
+                        ResponseEntity<InputStream> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                        LOG.info("Que tiene pdf: " + pdf.getBody().toString());
+
+                        byte[] bytes = IOUtils.toByteArray(pdf.getBody());
+                        LOG.info("Que tiene bytes: " + bytes.toString());
+
 
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
@@ -170,6 +176,8 @@ public class NotificationService {
                         helper.setFrom("pomalianni@gmail.com");
                         helper.setTo(notificationVoucherDTO.getPassengerEmail());
                         helper.setSubject("Voucher en PDF");
+                        sender.send(message);
+                        LOG.info("Finalizando notificaciones");
 
                     } catch (MessagingException | IOException e) {
                         e.printStackTrace();
