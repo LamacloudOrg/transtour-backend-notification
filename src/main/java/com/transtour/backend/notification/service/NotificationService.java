@@ -10,10 +10,12 @@ import com.transtour.backend.notification.repository.IVoucherRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -24,6 +26,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -157,18 +160,18 @@ public class NotificationService {
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
                 () -> {
                     try {
-                        String pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
-                        byte[] data = Base64.getDecoder().decode(pdf);
+                        ResponseEntity pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                        byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
 
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                                 StandardCharsets.UTF_8.name());
-                        helper.addAttachment("voucher.pdf", new ByteArrayResource(data));
+                        helper.addAttachment("voucher.pdf", new ByteArrayResource(bytes));
                         helper.setFrom("pomalianni@gmail.com");
                         helper.setTo(notificationVoucherDTO.getPassengerEmail());
                         helper.setSubject("Voucher en PDF");
 
-                    } catch (MessagingException e) {
+                    } catch (MessagingException | IOException e) {
                         e.printStackTrace();
                     }
                     return "Se envio el pdf por email";
