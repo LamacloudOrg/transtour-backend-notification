@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.InputStream;
 
 @Qualifier("VoucherClient")
-@FeignClient(name = "SPRING-CLOUD-VOUCHER")
+@FeignClient(name = "SPRING-CLOUD-VOUCHER-API")
 public interface IVoucherRepository {
 
     /*
