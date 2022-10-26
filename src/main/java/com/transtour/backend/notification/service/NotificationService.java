@@ -22,6 +22,7 @@ import org.springframework.mail.javamail.JavaMailSender;;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -162,24 +163,24 @@ public class NotificationService {
                 () -> {
 
                         LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                        ResponseEntity pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                        ResponseEntity<byte[]> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
                         LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
-                        byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
-                        LOG.info("Que tiene bytes: " + bytes.toString());
+                  //      byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
+                  //      LOG.info("Que tiene bytes: " + bytes.toString());
 
 
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                                 StandardCharsets.UTF_8.name());
-                        helper.addAttachment("voucher.pdf", new ByteArrayResource(bytes));
+                        helper.addAttachment("voucher.pdf", new ByteArrayResource(pdf.getBody()));
                         helper.setFrom("pomalianni@gmail.com");
                         helper.setTo(notificationVoucherDTO.getPassengerEmail());
                         helper.setSubject("Voucher en PDF");
                         sender.send(message);
                         LOG.info("Finalizando notificaciones");
 
-                    } catch (MessagingException | IOException e) {
+                    } catch (MessagingException e) {
                         e.printStackTrace();
                     }
                     return "Se envio el pdf por email";
