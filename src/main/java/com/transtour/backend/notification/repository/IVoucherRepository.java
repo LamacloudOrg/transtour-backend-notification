@@ -19,6 +19,6 @@ public interface IVoucherRepository {
     */
 
     @RequestMapping(method = RequestMethod.GET, value = "/v1/voucher/downloadPdf/{id}")
-    ResponseEntity<InputStream> getVoucher(@PathVariable Long travelId);
+    ResponseEntity<InputStream> getVoucher(@PathVariable Long id);
 
 }
