@@ -10,15 +10,13 @@ import com.transtour.backend.notification.repository.IVoucherRepository;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -26,9 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.ByteArrayInputStream;
+import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +112,7 @@ public class NotificationService {
 
     public CompletableFuture<MailResponseDTO> sendCodeNotifcation(ActivationAccountDTO activationAccountDTO) {
         CompletableFuture<MailResponseDTO> completableFuture = CompletableFuture.supplyAsync(
-                ()->{
+                ()-> {
                     MailResponseDTO response = new MailResponseDTO();
                     MimeMessage message = sender.createMimeMessage();
 
@@ -123,8 +120,8 @@ public class NotificationService {
                     EmailNotification resultEmailDriver = eRpo.findByDni(activationAccountDTO.getDriver());
                     Map<String, Object> model = new HashMap<>();
 
-                    model.put("code", activationAccountDTO.getCode().toString());
-                    model.put("driver", resultEmailDriver.getUsername().toString());
+                    model.put("code", activationAccountDTO.getCode());
+                    model.put("driver", resultEmailDriver.getUsername());
 
                     try {
                         // set mediaType
@@ -163,22 +160,16 @@ public class NotificationService {
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
                 () -> {
 
-                        LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                    MultipartFile pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
-                     //    LOG.info("Que tiene pdf: " + pdf.getBody().toString());
+                    LOG.info("Iniciando sendPdfToPassenger Notificaciones");
+                    ResponseEntity<MultipartFile> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                    //LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
-                  //      byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
-                  //      LOG.info("Que tiene bytes: " + bytes.toString());
 
-                    //    InputStream inputStream = new ByteArrayInputStream(pdf.getBody());
-
+                        ByteArrayDataSource source = new ByteArrayDataSource(pdf.getBody().getBytes(), "application/pdf");
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                                 StandardCharsets.UTF_8.name());
-                        // helper.addAttachment("voucher.pdf", new ByteArrayResource(pdf.getBody()));
-
-                        helper.addAttachment("Vocuher.pdf", pdf);
-
+                        helper.addAttachment("voucher.pdf", source);
 
                         helper.setFrom("pomalianni@gmail.com");
                         helper.setTo(notificationVoucherDTO.getPassengerEmail());
@@ -188,6 +179,8 @@ public class NotificationService {
 
                     } catch (MessagingException e) {
                         e.printStackTrace();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                     return "Se envio el pdf por email";
                 }
