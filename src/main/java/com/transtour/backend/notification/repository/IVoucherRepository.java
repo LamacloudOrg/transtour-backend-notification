@@ -26,7 +26,7 @@ import java.util.Collection;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Qualifier("VoucherClient")
-@FeignClient(name = "SPRING-CLOUD-VOUCHER-API", value = "material", configuration = IVoucherRepository.MultipartSupportConfig.class)
+@FeignClient(name = "SPRING-CLOUD-VOUCHER-API", configuration = IVoucherRepository.MultipartSupportConfig.class)
 public interface IVoucherRepository {
 
     @RequestMapping(
