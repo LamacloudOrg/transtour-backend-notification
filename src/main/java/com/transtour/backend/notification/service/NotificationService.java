@@ -164,20 +164,20 @@ public class NotificationService {
                 () -> {
 
                         LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                        ResponseEntity<byte[]> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                    MultipartFile pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
                      //    LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
                   //      byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
                   //      LOG.info("Que tiene bytes: " + bytes.toString());
 
-                        InputStream inputStream = new ByteArrayInputStream(pdf.getBody());
+                    //    InputStream inputStream = new ByteArrayInputStream(pdf.getBody());
 
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                                 StandardCharsets.UTF_8.name());
                         // helper.addAttachment("voucher.pdf", new ByteArrayResource(pdf.getBody()));
 
-                        helper.addAttachment("Vocuher.pdf", new ByteArrayResource(IOUtils.toByteArray(inputStream)), "application/pdf");
+                        helper.addAttachment("Vocuher.pdf", pdf);
 
 
                         helper.setFrom("pomalianni@gmail.com");
@@ -186,7 +186,7 @@ public class NotificationService {
                         sender.send(message);
                         LOG.info("Finalizando notificaciones");
 
-                    } catch (MessagingException | IOException e) {
+                    } catch (MessagingException e) {
                         e.printStackTrace();
                     }
                     return "Se envio el pdf por email";

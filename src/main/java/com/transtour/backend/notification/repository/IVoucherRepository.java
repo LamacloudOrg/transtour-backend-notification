@@ -29,5 +29,5 @@ public interface IVoucherRepository {
     @RequestMapping(
             value = "/v1/voucher/downloadPdf/{id}",
             method = GET)
-    ResponseEntity<byte[]> getVoucher(@PathVariable("id") Long id);
+    MultipartFile getVoucher(@PathVariable("id") Long id);
 }
