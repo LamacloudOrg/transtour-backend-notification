@@ -25,6 +25,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -163,7 +164,7 @@ public class NotificationService {
                 () -> {
 
                         LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                        ResponseEntity<byte[]> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                        ResponseEntity<Multipart> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
                         LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
                   //      byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
