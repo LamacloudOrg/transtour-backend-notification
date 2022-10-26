@@ -179,8 +179,6 @@ public class NotificationService {
 
                     } catch (MessagingException e) {
                         e.printStackTrace();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
                     }
                     return "Se envio el pdf por email";
                 }
