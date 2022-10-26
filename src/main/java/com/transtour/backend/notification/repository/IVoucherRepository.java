@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.Multipart;
 import java.io.InputStream;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -30,5 +29,5 @@ public interface IVoucherRepository {
     @RequestMapping(
             value = "/v1/voucher/downloadPdf/{id}",
             method = GET)
-    ResponseEntity<Multipart> getVoucher(@PathVariable("id") Long id);
+    ResponseEntity<byte[]> getVoucher(@PathVariable("id") Long id);
 }

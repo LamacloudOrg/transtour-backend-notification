@@ -25,8 +25,8 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -164,24 +164,29 @@ public class NotificationService {
                 () -> {
 
                         LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                        ResponseEntity<Multipart> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
-                        LOG.info("Que tiene pdf: " + pdf.getBody().toString());
+                        ResponseEntity<byte[]> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                     //    LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
                   //      byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
                   //      LOG.info("Que tiene bytes: " + bytes.toString());
 
+                        InputStream inputStream = new ByteArrayInputStream(pdf.getBody());
 
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                                 StandardCharsets.UTF_8.name());
-                        helper.addAttachment("voucher.pdf", new ByteArrayResource(pdf.getBody()));
+                        // helper.addAttachment("voucher.pdf", new ByteArrayResource(pdf.getBody()));
+
+                        helper.addAttachment("Vocuher.pdf", new ByteArrayResource(IOUtils.toByteArray(inputStream)), "application/pdf");
+
+
                         helper.setFrom("pomalianni@gmail.com");
                         helper.setTo(notificationVoucherDTO.getPassengerEmail());
                         helper.setSubject("Voucher en PDF");
                         sender.send(message);
                         LOG.info("Finalizando notificaciones");
 
-                    } catch (MessagingException e) {
+                    } catch (MessagingException | IOException e) {
                         e.printStackTrace();
                     }
                     return "Se envio el pdf por email";
