@@ -160,12 +160,12 @@ public class NotificationService {
 
         CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
                 () -> {
-                    try {
-                        LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                        ResponseEntity<InputStream> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
-                        LOG.info("Que tiene pdf: " + pdf.getBody().toString());
 
-                        byte[] bytes = IOUtils.toByteArray(pdf.getBody());
+                        LOG.info("Iniciando sendPdfToPassenger Notificaciones");
+                        ResponseEntity pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                        LOG.info("Que tiene pdf: " + pdf.getBody().toString());
+                    try {
+                        byte[] bytes = IOUtils.toByteArray((InputStream) pdf.getBody());
                         LOG.info("Que tiene bytes: " + bytes.toString());
 
 
