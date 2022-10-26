@@ -161,11 +161,11 @@ public class NotificationService {
                 () -> {
 
                     LOG.info("Iniciando sendPdfToPassenger Notificaciones");
-                    ResponseEntity<MultipartFile> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
+                    ResponseEntity<byte[]> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
                     //LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
 
-                        ByteArrayDataSource source = new ByteArrayDataSource(pdf.getBody().getBytes(), "application/pdf");
+                        ByteArrayDataSource source = new ByteArrayDataSource(pdf.getBody(), "application/pdf");
                         MimeMessage message = sender.createMimeMessage();
                         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                                 StandardCharsets.UTF_8.name());
