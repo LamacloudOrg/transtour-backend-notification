@@ -20,10 +20,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.BodyPart;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -157,23 +162,19 @@ public class NotificationService {
     }
     public CompletableFuture<String> sendPdfToPassenger(NotificationVoucherDTO notificationVoucherDTO) {
 
-        CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(
+        return CompletableFuture.supplyAsync(
                 () -> {
 
                     LOG.info("Iniciando sendPdfToPassenger Notificaciones");
                     ResponseEntity<byte[]> pdf = voucherRepository.getVoucher(notificationVoucherDTO.getTravelId());
                     //LOG.info("Que tiene pdf: " + pdf.getBody().toString());
                     try {
-
-                        ByteArrayDataSource source = new ByteArrayDataSource(pdf.getBody(), "application/pdf");
                         MimeMessage message = sender.createMimeMessage();
-                        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                                StandardCharsets.UTF_8.name());
-                        helper.addAttachment("voucher.pdf", source);
-
+                        MimeMessageHelper helper = new MimeMessageHelper(message);
                         helper.setFrom("pomalianni@gmail.com");
                         helper.setTo(notificationVoucherDTO.getPassengerEmail());
                         helper.setSubject("Voucher en PDF");
+                        message.setContent(multipart(pdf.getBody(), "voucher.pdf"));
                         sender.send(message);
                         LOG.info("Finalizando notificaciones");
 
@@ -183,7 +184,30 @@ public class NotificationService {
                     return "Se envio el pdf por email";
                 }
         );
+    }
 
-        return completableFuture;
+
+    private Multipart multipart(byte[] pdf, String filename) throws MessagingException {
+        // Create the message part
+        BodyPart messageBodyPart = new MimeBodyPart();
+// Fill the message
+        messageBodyPart.setText("Voucher adjunto");
+// Create a multipar message
+        Multipart multipart = new MimeMultipart();
+// Set text message part
+        multipart.addBodyPart(messageBodyPart);
+// Part two is attachment
+        messageBodyPart = new MimeBodyPart();
+        //String filename = "file.txt";
+
+        DataSource source = new ByteArrayDataSource(pdf, "application/pdf");
+
+        //DataSource source = new FileDataSource(filename);
+
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(filename);
+        multipart.addBodyPart(messageBodyPart);
+
+        return multipart;
     }
 }
